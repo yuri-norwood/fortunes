@@ -2,19 +2,20 @@
 # Main makefile for installation of fortunes
 #
 
-FORTUNE_DIR?=/usr/share/fortune/
+FORTUNE_DIR=/usr/share/fortune/
+FORTUNE_BIN=fortune strfile
 
-all: fortune-bin ${PREFIX}${FORTUNE_DIR}
+all: ${FORTUNE_BIN} ${PREFIX}${FORTUNE_DIR}
 
 ${PREFIX}${FORTUNE_DIR}:
 	mkdir -p $@
 
-fortune-bin:
-	@if [ ! -x "$$(command -v fortune)" ] ; \
+${FORTUNE_BIN}:
+	@if [ ! -x "$$(command -v $@)" ] ; \
 	then \
-		echo "No fortune teller found." ; \
+		echo "'$@' is not installed." 1>&2 ; \
 		exit 1 ; \
 	fi
 
-.PHONY: fortune-bin
+.PHONY: all ${FORTUNE_BIN}
 

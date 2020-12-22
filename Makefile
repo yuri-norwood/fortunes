@@ -2,14 +2,22 @@
 # Main makefile for installation of fortunes
 #
 
+FORTUNE_SFW=InternationalSpaceStationLogs
+FORTUNE_OFF=
+FORTUNE_ALL=${FORTUNE_SFW} ${FORTUNE_OFF}
+FORTUNE_DAT=${FORTUNE_ALL:%=%.dat}
 FORTUNE_DIR=/usr/share/fortune/
 FORTUNE_BIN=fortune strfile
-FORTUNE_TXT=InternationalSpaceStationLogs
-FORTUNE_DAT=${FORTUNE_TXT:%=%.dat}
 
-all: ${FORTUNE_BIN} ${PREFIX}${FORTUNE_DIR} ${FORTUNE_DAT}
+check: ${FORTUNE_BIN} ${PREFIX}${FORTUNE_DIR}
 
-install: all
+all: check ${FORTUNE_DAT}
+
+offensive: check ${FORTUNE_OFF:%=%.dat}
+
+unoffensive: check ${FORTUNE_SFW:%=%.dat}
+
+install:
 
 uninstall:
 
@@ -29,5 +37,5 @@ ${FORTUNE_BIN}:
 		exit 1 ; \
 	fi
 
-.PHONY: all install uninstall clean ${FORTUNE_BIN}
+.PHONY: check all offensive unoffensive install uninstall clean ${FORTUNE_BIN}
 

@@ -19,8 +19,8 @@ clean:
 ${PREFIX}${FORTUNE_DIR}:
 	mkdir -p $@
 
-${FORTUNE_DAT}:
-	strfile ${@:%.dat=%}
+${FORTUNE_DAT}: %.dat : %
+	strfile  $<
 
 ${FORTUNE_BIN}:
 	@if [ ! -x "$$(command -v $@)" ] ; \

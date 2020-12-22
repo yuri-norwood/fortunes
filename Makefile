@@ -5,17 +5,21 @@
 FORTUNE_DIR=/usr/share/fortune/
 FORTUNE_BIN=fortune strfile
 FORTUNE_TXT=InternationalSpaceStationLogs
+FORTUNE_DAT=${FORTUNE_TXT:%=%.dat}
 
-all: ${FORTUNE_BIN} ${PREFIX}${FORTUNE_DIR} ${FORTUNE_TXT:%=%.dat}
+all: ${FORTUNE_BIN} ${PREFIX}${FORTUNE_DIR} ${FORTUNE_DAT}
 
 install: all
 
 uninstall:
 
+clean:
+	rm -f ${FORTUNE_DAT}
+
 ${PREFIX}${FORTUNE_DIR}:
 	mkdir -p $@
 
-${FORTUNE_TXT:%=%.dat}:
+${FORTUNE_DAT}:
 	strfile ${@:%.dat=%}
 
 ${FORTUNE_BIN}:
@@ -25,5 +29,5 @@ ${FORTUNE_BIN}:
 		exit 1 ; \
 	fi
 
-.PHONY: all install uninstall ${FORTUNE_BIN}
+.PHONY: all install uninstall clean ${FORTUNE_BIN}
 

@@ -11,7 +11,6 @@ FORTUNE_OFF=
 FORTUNE_ALL=${FORTUNE_SFW} ${FORTUNE_OFF}
 FORTUNE_DAT=${FORTUNE_ALL:%=%.dat}
 FORTUNE_DIR=${PREFIX}${DESTINATION}
-FORTUNE_BIN=fortune strfile
 
 usage:
 	@printf '%s\n'     "Usage: make [DESTINATION=<fortune directory>] [usage | [[clean] [all | offensive | unoffensive] [install | uninstall]]]"
@@ -41,48 +40,56 @@ usage:
 	@printf '\t\t%s\n' "projects or packages if there are name collisions."
 	@exit 1
 
-check: ${FORTUNE_BIN} ${FORTUNE_DIR}
+check: ${FORTUNE_DIR} ${FORTUNE_DIR}/off
 
-all: check ${FORTUNE_DAT}
+all: ${FORTUNE_DAT}
 
-offensive: check ${FORTUNE_OFF:%=%.dat}
+offensive: ${FORTUNE_OFF:%=%.dat}
 
-unoffensive: check ${FORTUNE_SFW:%=%.dat}
+unoffensive: ${FORTUNE_SFW:%=%.dat}
 
-install:
-	@for fortune in ${FORTUNE_ALL}                             ; \
-	do                                                           \
-		if [ -f "$${fortune}"     ]                          \
-		&& [ -f "$${fortune}.dat" ]                        ; \
-		then                                                 \
-			echo "Installing $${fortune}"              ; \
-			cp -f "$${fortune}"     "${FORTUNE_DIR}/." ; \
-			cp -f "$${fortune}.dat" "${FORTUNE_DIR}/." ; \
-		fi                                                 ; \
+install: check
+	@for fortune in ${FORTUNE_SFW}                                 ; \
+	do                                                               \
+		if [ -f "$${fortune}"     ]                              \
+		&& [ -f "$${fortune}.dat" ]                            ; \
+		then                                                     \
+			echo "Installing $${fortune}"                  ; \
+			cp -f "$${fortune}"     "${FORTUNE_DIR}/."     ; \
+			cp -f "$${fortune}.dat" "${FORTUNE_DIR}/."     ; \
+		fi                                                     ; \
+	done
+	@for fortune in ${FORTUNE_OFF}                                 ; \
+	do                                                               \
+		if [ -f "$${fortune}"     ]                              \
+		&& [ -f "$${fortune}.dat" ]                            ; \
+		then                                                     \
+			echo "Installing $${fortune}"                  ; \
+			cp -f "$${fortune}"     "${FORTUNE_DIR}/off/." ; \
+			cp -f "$${fortune}.dat" "${FORTUNE_DIR}/off/." ; \
+		fi                                                     ; \
 	done
 
-uninstall:
-	@for fortune in ${FORTUNE_ALL}                 ; \
-	do                                               \
-		rm -f "${FORTUNE_DIR}/$${fortune}"     ; \
-		rm -f "${FORTUNE_DIR}/$${fortune}.dat" ; \
+uninstall: check
+	@for fortune in ${FORTUNE_SFW}                     ; \
+	do                                                   \
+		rm -f "${FORTUNE_DIR}/$${fortune}"         ; \
+		rm -f "${FORTUNE_DIR}/$${fortune}.dat"     ; \
+	done
+	@for fortune in ${FORTUNE_OFF}                     ; \
+	do                                                   \
+		rm -f "${FORTUNE_DIR}/off/$${fortune}"     ; \
+		rm -f "${FORTUNE_DIR}/off/$${fortune}.dat" ; \
 	done
 
 clean:
 	rm -f ${FORTUNE_DAT}
 
-${FORTUNE_DIR}:
+${FORTUNE_DIR} ${FORTUNE_DIR}/off:
 	mkdir -p $@
 
 ${FORTUNE_DAT}: %.dat : %
 	strfile  $<
 
-${FORTUNE_BIN}:
-	@if [ ! -x "$$(command -v $@)" ]           ; \
-	then                                         \
-		echo "'$@' is not installed." 1>&2 ; \
-		exit 1                             ; \
-	fi
-
-.PHONY: check all offensive unoffensive install uninstall clean ${FORTUNE_BIN}
+.PHONY: check all offensive unoffensive install uninstall clean
 

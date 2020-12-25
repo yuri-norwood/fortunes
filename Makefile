@@ -4,7 +4,7 @@
 # This must be the first non-comment line
 .POSIX:
 
-DESTINATION=/usr/share/games/fortune
+DESTINATION=/usr/share/games/fortunes
 
 FORTUNE_SFW=InternationalSpaceStationLogs
 FORTUNE_OFF=

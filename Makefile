@@ -7,7 +7,7 @@
 DESTINATION=/usr/share/games/fortunes
 
 FORTUNE_SFW=InternationalSpaceStationLogs
-FORTUNE_OFF=PrincipiaDiscordia ILoveToConspire
+FORTUNE_OFF=PrincipiaDiscordia Insults ILoveToConspire
 FORTUNE_ALL=${FORTUNE_SFW} ${FORTUNE_OFF}
 FORTUNE_DAT=${FORTUNE_ALL:%=%.dat}
 FORTUNE_DIR=${PREFIX}${DESTINATION}
